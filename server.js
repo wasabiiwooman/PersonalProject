@@ -12,12 +12,14 @@ mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopol
 let exerciseSchema = new mongoose.Schema({
   description: {type: String, required: true},
   duration: {type: Number, required: true},
-  date: String
+  date: String,
+  __v: {type: Number, select: false}
 });
 
 let userSchema = new mongoose.Schema({
   username: {type: String, required: true},
-  log: [exerciseSchema]
+  log: [exerciseSchema],
+  __v: {type: Number, select: false}
 })
 
 let Exercise = mongoose.model('Exercise', exerciseSchema);
@@ -95,8 +97,37 @@ app.get('/api/users/:_id/logs', (req, res) => {
     if (err) {
       console.error(err)
     } else {
-      let resObject = userData
+      
+      /* Count Limit */
+    if(req.query.limit){
+      userData.log = userData.log.slice(0, req.query.limit)
+    }
+
+    /*Date Filter */
+    if(req.query.from || req.query.to){
+      let fromDate = new Date(0)
+      let toDate = new Date()
+      
+      if(req.query.from){
+        fromDate = new Date(req.query.from)
+      }
+      
+      if(req.query.to){
+        toDate = new Date(req.query.to)
+      }
+      
+      userData.log = userData.log.filter((exerciseItem) =>{
+        let exerciseItemDate = new Date(exerciseItem.date)
+        
+        return exerciseItemDate.getTime() >= fromDate.getTime()
+          && exerciseItemDate.getTime() <= toDate.getTime()
+      })
+      
+    }
+      var resObject = {}
+      resObject['username'] = userData.username
       resObject['count'] = userData.log.length
+      resObject['log'] = userData.log
       res.json(resObject)
     }
   })
