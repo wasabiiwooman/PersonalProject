@@ -1,1 +1,2 @@
-# [Exercise Tracker](https://www.freecodecamp.org/learn/apis-and-microservices/apis-and-microservices-projects/exercise-tracker)
+#Exercise Tracker Web App
+Made by following a tutorial by Ganesh H.
