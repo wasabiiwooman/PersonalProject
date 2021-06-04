@@ -1,2 +1,2 @@
-#Exercise Tracker Web App
-Made by following a tutorial by Ganesh H.
+#Exercise Tracker App
+#Made by following a tutorial by Ganesh H.
